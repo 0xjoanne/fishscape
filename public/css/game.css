@@ -1,0 +1,149 @@
+
+*{
+  padding: 0;
+  margin: 0;
+}
+
+canvas {
+  display: block;
+  margin: 150px auto 0;
+}
+
+/*main content area*/
+.main{
+  display: flex;
+  min-width: 100vw;
+  min-height: 100vh;
+  justify-content: center;
+  align-items: center;
+  background-color: #418ADF;
+}
+
+.main input,
+.main button,
+body{
+  font-family: 'Boogaloo', cursive;
+  color: white;
+}
+
+.main button{
+  background-color:#4cd2b4;
+    border: none;
+    padding: .8em 2em;
+    border-radius: 2em;
+    margin-top: 4em;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: all .3s ease;
+}
+
+.main button:hover {
+  letter-spacing: .05em;
+  background: #50E3C2;
+}
+
+p{
+  font-size: 1.6em;
+  margin-top: .5em;;
+}
+
+
+
+h1{
+  font-size: 6em;
+  text-transform: uppercase;
+  color: #EEE25F;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.u-drop-shadow{
+  filter: drop-shadow(2px 5px 5px rgba(0,0,0,0.4));
+}
+
+.u-no-display{
+  display: none;
+}
+
+.u-small-text{
+  font-size: .8em;
+}
+
+
+
+/*username form*/
+
+#content{
+  min-width: 90%;
+  text-align: center;
+}
+
+input#username{
+width: 40%;
+min-width: 300px;
+background: transparent;
+border: none;
+border-bottom: 2px solid #326aab;
+color: #326aab;
+font-size: 3em;
+text-align: center;
+margin-top: 2em;
+}
+
+input#username:focus{
+  outline: none;
+}
+
+
+/*countdown clock*/
+
+.countdown__timer{
+  position: absolute;
+  height: 1.5em;
+  width: 1.5em;
+  background: #4cd2b4;
+  border-radius: 50%;
+  top: 3rem;
+  right: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 6em;
+
+}
+
+.countdown__number{
+  font-size: 0.5em;
+}
+
+.countdown__number span {
+  font-size: 1em;
+}
+
+
+#players-list{
+  max-width: 700px;
+margin: 0 auto;
+display: flex;
+padding: 0;
+list-style: none;
+justify-content: space-around;
+margin-top: 3em;
+font-size: 1.8em;
+}
+
+.players-list__item{
+  position: relative;
+}
+
+.players-list__item:after{
+  content: '';
+    background: #4cd2b4;
+    height: 5px;
+    width: 5px;
+    position: absolute;
+    border-radius: 50%;
+    flex-basis: 3em;
+    flex-shrink: 0;
+    margin-bottom: 1.2em;
+}

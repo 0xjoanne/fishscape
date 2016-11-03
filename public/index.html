@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='UTF-8' />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>FishScape</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Boogaloo" rel="stylesheet">
+    <link type='text/css' rel='stylesheet' href='/css/game.css' />
+
+  </head>
+  <body>
+    <!-- countdown -->
+    <div class="countdown u-no-display">
+      <div class="countdown__timer u-drop-shadow">
+        <div class="countdown__number"><span>6</span>s</div>
+      </div>
+      <div class="info__label"></div>
+    </div>
+
+
+    <main id="main" class="main">
+      <!-- main content area to replace with ajax -->
+      <div id="content">
+        <h1 id="title" class="u-drop-shadow">fishcape!</h1>
+        <input id="username" type="text">
+        <p class="info__label">enter username</p>
+        <button id="join-btn" class="u-drop-shadow" type="button" name="join">join game</button>
+      </div>
+      <!-- end of main content area -->
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/lodash/4.16.4/lodash.min.js" charset="utf-8"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src='/js/vendor/phaser.min.js'></script>
+    <script src='/socket.io/socket.io.js'></script>
+    <script src="/js/player.js" charset="utf-8"></script>
+
+  </body>
+</html>

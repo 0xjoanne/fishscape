@@ -8,10 +8,11 @@ var enemies;
 var cursors;
 var button;
 
-var counter = 30;
-var text = 0;
+// var counter = 30;
+var timer;
+var alive = true;
 
-var game = new Phaser.Game(1024, 543, Phaser.AUTO);
+var game = new Phaser.Game(1024, 543, Phaser.AUTO, 'main');
 
 var storedPlayers = JSON.parse(localStorage.getItem("players"));
 var currentPlayer = JSON.parse(localStorage.getItem("currentPlayer"));
@@ -40,6 +41,8 @@ var playState = {
       player = game.add.sprite(startX, startY, 'fish');
     }else{
       player = game.add.sprite(startX, startY, 'shark');
+      // add timer
+      socket.emit('display game timer', {timer: 30});
     }
 
     player.anchor.setTo(0.5, 0.5);
@@ -56,20 +59,23 @@ var playState = {
     // Start listening for events
     setEventHandlers();
 
+    //timer bg
+    var timerBg = game.add.graphics(0, 0);
+    timerBg.beginFill(0x50E3C2, 1);
+    timerBg.drawCircle(70, 70, 80);
 
-    // add timer
-    text = game.add.text(70, 40, 'Timer: 30s', { font: "20px Arial", fill: "#000000", align: "center" });
-    text.anchor.setTo(0.5, 0.5);
+    timer = game.add.text(72, 73, '30s', { font: "24px Arial", fill: "#ffffff", align: "center" });
+    timer.anchor.setTo(0.5, 0.5);
 
-    game.time.events.loop(Phaser.Timer.SECOND, this.updateCounter, this);
   },
 
   update: function(){
     for (var i = 0; i < enemies.length; i++) {
       if (enemies[i].alive) {
-        enemies[i].update()
+        enemies[i].update();
         if(currentPlayer.role === "shark"){
           game.physics.arcade.overlap(player, enemies[i].player, this.eatFish);
+
         }
         // game.physics.arcade.collide(player, enemies[i].player)
       }
@@ -80,18 +86,11 @@ var playState = {
     player.animations.play('right');
     player.bringToTop();
 
-    if (cursors.left.isDown){
-        player.body.velocity.x = -200;
-        player.scale.x = -1;
-    }else if (cursors.right.isDown){
-        player.body.velocity.x = 200;
-        player.scale.x = 1;
-    }else if (cursors.up.isDown){
-        player.body.velocity.y = -200;
-    }else if (cursors.down.isDown){
-        player.body.velocity.y = 200;
+    if(currentPlayer.role === "fish"){
+      playerMove(200);
+    }else{
+      playerMove(150);
     }
-
 
     socket.emit('move player', { x: player.x, y: player.y, angle: player.scale.x });
   },
@@ -99,16 +98,20 @@ var playState = {
   eatFish: function(player, enemy){
     enemy.kill();
     socket.emit('kill player', { id: enemy.name});
-  },
+  }
+}
 
-  updateCounter: function(){
-    if(counter <= 0){
-      var gameOverText = game.add.text(game.world.centerX - 150, game.world.centerY-30, 'Game Over', { font: "64px Arial", fill: "#ffffff", align: "center" });
-      gameOverText.bringToTop();
-    }else{
-      counter--;
-      text.setText('Timer: ' + counter + 's');
-    }
+function playerMove(speed){
+  if (cursors.left.isDown){
+      player.body.velocity.x = -speed;
+      player.scale.x = -1;
+  }else if (cursors.right.isDown){
+      player.body.velocity.x = speed;
+      player.scale.x = 1;
+  }else if (cursors.up.isDown){
+      player.body.velocity.y = -speed;
+  }else if (cursors.down.isDown){
+      player.body.velocity.y = speed;
   }
 }
 
@@ -131,8 +134,15 @@ var setEventHandlers = function () {
   // Player removed message received
   socket.on('kill player', onKillPlayer);
 
-}
+  // display game timer
+  socket.on('display game timer', onDisplayGameTimer);
 
+  // game over when time up
+  socket.on('time up', onTimeUp);
+
+  // game over when all fishes died
+  socket.on('game over', onGameOver);
+}
 
 // Socket connected
 function onSocketConnected () {
@@ -187,6 +197,7 @@ function onMovePlayer (data) {
 
 // Remove player
 function onRemovePlayer (data) {
+
   var removePlayer = playerById(data.id);
 
   // Player not found
@@ -194,15 +205,16 @@ function onRemovePlayer (data) {
     console.log('Player not found: ', data.id);
     return
   }
-  console.log(removePlayer);
+
   removePlayer.player.kill()
 
   // Remove player from array
   enemies.splice(enemies.indexOf(removePlayer), 1);
+
 }
 
-//
 function onKillPlayer (data) {
+
   var removePlayer = playerById(data.id);
 
   // Player not found
@@ -214,6 +226,55 @@ function onKillPlayer (data) {
     // Remove player from array
     enemies.splice(enemies.indexOf(removePlayer), 1);
   }
+
+  if(data.id == socket.id){
+    alive = false;
+  }
+}
+
+// display game timer
+function onDisplayGameTimer(count){
+  timer.setText(count + "s");
+}
+
+function onTimeUp(){
+  game.world.removeAll();
+  game.stage.backgroundColor = "#418ADF";
+  var gameOverText;
+  if(currentPlayer.role === "fish"){
+    if(alive){
+      gameOverText = "You won!";
+    }else{
+      gameOverText = "You lost!";
+    }
+  }else{
+    gameOverText = "You lost!";
+  }
+  var gameOverTitle = game.add.text(game.world.centerX, game.world.centerY-30, gameOverText, { font: "64px Arial", fill: "#ffffff", align: "center" });
+  gameOverTitle.anchor.set(0.5, 0);
+
+  cursors.left.enabled = false;
+  cursors.right.enabled = false;
+  cursors.up.enabled = false;
+  cursors.down.enabled = false;
+}
+
+function onGameOver(){
+  game.world.removeAll();
+  game.stage.backgroundColor = "#418ADF";
+  var gameOverText;
+  if(currentPlayer.role === "fish"){
+    gameOverText = "You lost!";
+  }else{
+    gameOverText = "You won!";
+  }
+  var gameOverTitle = game.add.text(game.world.centerX, game.world.centerY-30, gameOverText, { font: "64px Arial", fill: "#ffffff", align: "center" });
+  gameOverTitle.anchor.set(0.5, 0);
+
+  cursors.left.enabled = false;
+  cursors.right.enabled = false;
+  cursors.up.enabled = false;
+  cursors.down.enabled = false;
 }
 
 // Find player by ID

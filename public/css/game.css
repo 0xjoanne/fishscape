@@ -4,11 +4,6 @@
   margin: 0;
 }
 
-canvas {
-  display: block;
-  margin: 150px auto 0;
-}
-
 /*main content area*/
 .main{
   display: flex;
@@ -28,13 +23,15 @@ body{
 
 .main button{
   background-color:#4cd2b4;
-    border: none;
-    padding: .8em 2em;
-    border-radius: 2em;
-    margin-top: 4em;
-    font-size: 1.2em;
-    cursor: pointer;
-    transition: all .3s ease;
+  border: none;
+  padding: .8em 2em;
+  border-radius: 2em;
+  margin-top: 4em;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: all .3s ease;
+  outline: none;
+
 }
 
 .main button:hover {
@@ -46,8 +43,6 @@ p{
   font-size: 1.6em;
   margin-top: .5em;;
 }
-
-
 
 h1{
   font-size: 6em;
@@ -69,7 +64,33 @@ h1{
   font-size: .8em;
 }
 
-
+.tutorial-link{
+  color: white;
+  text-decoration: none;
+  display: block;
+  margin-top: 50px;
+  font-size: 18px;
+}
+.mask{
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background: rgba(0, 0, 0, 0.3);
+  display: none;
+  cursor: pointer;
+}
+.tutorial-modal{
+  position: absolute;
+  display: none;
+}
+.close-btn{
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  cursor: pointer;
+}
 
 /*username form*/
 
@@ -96,6 +117,9 @@ input#username:focus{
 
 
 /*countdown clock*/
+.countdown{
+  display: none;
+}
 
 .countdown__timer{
   position: absolute;
@@ -120,30 +144,47 @@ input#username:focus{
   font-size: 1em;
 }
 
+.countdown .info__label{
+  position: absolute;
+  top: 13.5rem;
+  right: 4rem;
+  font-size: 18px;
+}
+
+/*players list*/
 
 #players-list{
   max-width: 700px;
-margin: 0 auto;
-display: flex;
-padding: 0;
-list-style: none;
-justify-content: space-around;
-margin-top: 3em;
-font-size: 1.8em;
+  margin: 0 auto;
+  display: flex;
+  padding: 0;
+  list-style: none;
+  justify-content: space-around;
+  margin-top: 3em;
+  font-size: 1.8em;
 }
 
 .players-list__item{
   position: relative;
 }
 
+.highlight-color{
+  color: #EEE25F;
+}
+
 .players-list__item:after{
   content: '';
-    background: #4cd2b4;
-    height: 5px;
-    width: 5px;
-    position: absolute;
-    border-radius: 50%;
-    flex-basis: 3em;
-    flex-shrink: 0;
-    margin-bottom: 1.2em;
+  background: #4cd2b4;
+  height: 5px;
+  width: 5px;
+  position: absolute;
+  border-radius: 50%;
+  flex-basis: 3em;
+  flex-shrink: 0;
+  margin-bottom: 1.2em;
+}
+
+/*role screen*/
+.role-img{
+  margin-top: 50px;
 }

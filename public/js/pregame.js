@@ -1,8 +1,7 @@
 $(document).ready(function(){
 
-
   // init socket
-  var socket = io();
+  // var socket = io();
 
   // create a player object
   var player = {};
@@ -15,11 +14,11 @@ $(document).ready(function(){
     signup();
   });
 
-  $('#username').keypress(function (e) {
-    if (e.which == 13) {
-      signup();
-    }
-  });
+  // $('#username').keypress(function (e) {
+  //   if (e.which == 13) {
+  //     signup();
+  //   }
+  // });
 
   function signup(){
     if($('#username').val()){
@@ -32,6 +31,8 @@ $(document).ready(function(){
 
       //player role is equal to fish
       player.role = 'fish';
+
+      // player.room_id = roomId;
 
       //send player object to server
       socket.emit('join game', player);
@@ -89,6 +90,7 @@ $(document).ready(function(){
         $('#content').fadeOut(200, function(){
           $('#main').html(response);
           socket.emit('get users');
+          console.log(roomId);
         })
       }
     }).fail(function() {
@@ -105,10 +107,11 @@ $(document).ready(function(){
       if($('#main').html() != response){
         $('#content').fadeOut(200, function(){
           $('#main').html(response);
-          localStorage.setItem('players', JSON.stringify(players));
+          // localStorage.setItem('players', JSON.stringify(players));
           $.each(players, function(index, el) {
             if(el.id == socket.id){
-              localStorage.setItem('currentPlayer',JSON.stringify(el));
+              // localStorage.setItem('currentPlayer',JSON.stringify(el));
+              currentPlayer = el;
               if(el.role === "fish"){
                 $('.role-text').text("You are fish");
                 $('.role-img').attr('src', '/assets/fish-right.png');
@@ -147,6 +150,10 @@ $(document).ready(function(){
    * Socket functions
    */
 
+  socket.on('get roomid', function(data){
+    roomId = data;
+  })
+
   socket.on('display players', function(players){
     // clear the players list
     $('#players-list').html('');
@@ -179,7 +186,7 @@ $(document).ready(function(){
   })
 
   socket.on('display role', function(players){
-    window.localStorage.clear();
+    // window.localStorage.clear();
 
     $('.countdown').hide();
 

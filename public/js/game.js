@@ -1,6 +1,6 @@
 /* global Phaser RemotePlayer io */
 
-var socket; // Socket connection
+// var socket;  // Socket connection
 
 var player;
 var enemies;
@@ -14,8 +14,8 @@ var alive = true;
 
 var game = new Phaser.Game(1024, 543, Phaser.AUTO, 'main');
 
-var storedPlayers = JSON.parse(localStorage.getItem("players"));
-var currentPlayer = JSON.parse(localStorage.getItem("currentPlayer"));
+// var storedPlayers = JSON.parse(localStorage.getItem("players"));
+// var currentPlayer = JSON.parse(localStorage.getItem("currentPlayer"));
 
 var playState = {
   preload: function(){
@@ -26,7 +26,7 @@ var playState = {
   },
 
   create: function(){
-    socket = io.connect();
+    // socket = io.connect();
 
     // Create some baddies to waste :)
     enemies = [];
@@ -42,7 +42,7 @@ var playState = {
     }else{
       player = game.add.sprite(startX, startY, 'shark');
       // add timer
-      socket.emit('display game timer', {timer: 30});
+      socket.emit('display game timer', {timer: 30, room_id: roomId});
     }
 
     player.anchor.setTo(0.5, 0.5);
@@ -67,6 +67,8 @@ var playState = {
     timer = game.add.text(72, 73, '30s', { font: "24px Arial", fill: "#ffffff", align: "center" });
     timer.anchor.setTo(0.5, 0.5);
 
+    // Send local player data to the game server
+    socket.emit('new player', { x: player.x, y: player.y, angle: player.scale.x, role: currentPlayer.role, room_id: roomId});
   },
 
   update: function(){
@@ -92,12 +94,12 @@ var playState = {
       playerMove(150);
     }
 
-    socket.emit('move player', { x: player.x, y: player.y, angle: player.scale.x });
+    socket.emit('move player', { x: player.x, y: player.y, angle: player.scale.x, room_id: roomId });
   },
 
   eatFish: function(player, enemy){
     enemy.kill();
-    socket.emit('kill player', { id: enemy.name});
+    socket.emit('kill player', { id: enemy.name, room_id: roomId});
   }
 }
 
@@ -116,8 +118,6 @@ function playerMove(speed){
 }
 
 var setEventHandlers = function () {
-  // Socket connection successful
-  socket.on('connect', onSocketConnected);
 
   // Socket disconnection
   socket.on('disconnect', onSocketDisconnect);
@@ -142,20 +142,7 @@ var setEventHandlers = function () {
 
   // game over when all fishes died
   socket.on('game over', onGameOver);
-}
 
-// Socket connected
-function onSocketConnected () {
-  console.log('Connected to socket server');
-
-  // Reset enemies on reconnect
-  enemies.forEach(function (enemy) {
-    enemy.player.kill();
-  })
-  enemies = [];
-
-  // Send local player data to the game server
-  socket.emit('new player', { x: player.x, y: player.y, angle: player.scale.x, role: currentPlayer.role});
 }
 
 // Socket disconnected
@@ -164,7 +151,7 @@ function onSocketDisconnect () {
 }
 
 // New player
-function onNewPlayer (data) {
+function onNewPlayer(data) {
   console.log('New player connected:', data.id);
 
   // Avoid possible duplicate players
@@ -185,7 +172,7 @@ function onMovePlayer (data) {
 
   // Player not found
   if (!movePlayer) {
-    console.log('Player not found: ', data.id);
+    // console.log('Player not found: ', data.id);
     return
   }
 
@@ -213,7 +200,7 @@ function onRemovePlayer (data) {
 
 }
 
-function onKillPlayer (data) {
+function onKillPlayer(data) {
 
   var removePlayer = playerById(data.id);
 

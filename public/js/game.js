@@ -11,6 +11,7 @@ var button;
 // var counter = 30;
 var timer;
 var alive = true;
+var round = 1;
 
 var game = new Phaser.Game(1024, 543, Phaser.AUTO, 'main');
 
@@ -19,6 +20,7 @@ var game = new Phaser.Game(1024, 543, Phaser.AUTO, 'main');
 
 var playState = {
   preload: function(){
+    game.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
     game.load.image('background', 'assets/background.jpg');
   	game.load.image('star', 'assets/star.png');
     game.load.spritesheet('fish', 'assets/spritesheet.png', 104, 66);
@@ -26,7 +28,6 @@ var playState = {
   },
 
   create: function(){
-    // socket = io.connect();
 
     // Create some baddies to waste :)
     enemies = [];
@@ -141,7 +142,7 @@ var setEventHandlers = function () {
   socket.on('time up', onTimeUp);
 
   // game over when all fishes died
-  socket.on('game over', onGameOver);
+  socket.on('game over', onAllFishesDied);
 
 }
 
@@ -216,6 +217,7 @@ function onKillPlayer(data) {
 
   if(data.id == socket.id){
     alive = false;
+    loadLostScreen();
   }
 }
 
@@ -224,44 +226,100 @@ function onDisplayGameTimer(count){
   timer.setText(count + "s");
 }
 
-function onTimeUp(){
-  game.world.removeAll();
-  game.stage.backgroundColor = "#418ADF";
-  var gameOverText;
-  if(currentPlayer.role === "fish"){
-    if(alive){
-      gameOverText = "You won!";
+// when time's up
+function onTimeUp(isFinalRound){
+  if(isFinalRound){
+    if(currentPlayer.role === "fish" && alive){
+      loadWonScreen();
     }else{
-      gameOverText = "You lost!";
+      loadLostScreen();
     }
   }else{
-    gameOverText = "You lost!";
-  }
-  var gameOverTitle = game.add.text(game.world.centerX, game.world.centerY-30, gameOverText, { font: "64px Arial", fill: "#ffffff", align: "center" });
-  gameOverTitle.anchor.set(0.5, 0);
+    round++;
 
-  cursors.left.enabled = false;
-  cursors.right.enabled = false;
-  cursors.up.enabled = false;
-  cursors.down.enabled = false;
+    var mask = game.add.graphics();
+    mask.lineStyle(0);
+    mask.beginFill(0x000000, 1);
+    mask.drawRect(0,0,game.world.width, game.world.height);
+    mask.endFill();
+    mask.alpha = 0.5;
+
+
+    var roundLabel = game.add.text(game.world.centerX, game.world.centerY-30, "Round " + round, { font: "64px Boogaloo", fill: "#EEE25F", align: "center" });
+    roundLabel.anchor.set(0.5, 0);
+
+    enabledKeyboardControl(false);
+
+    var count = 3;
+    var countDownInterval = setInterval(function(){
+      if(count < 0){
+        mask.kill();
+        roundLabel.destroy();
+        clearInterval(countDownInterval);
+        enabledKeyboardControl(true);
+      }
+
+      if(count == 0){
+        roundLabel.setText("Start");
+        socket.emit('display game timer', {timer: 15, room_id: roomId});
+      }else{
+        roundLabel.setText(count);
+      }
+
+      count--;
+    }, 1000);
+  }
 }
 
-function onGameOver(){
-  game.world.removeAll();
-  game.stage.backgroundColor = "#418ADF";
-  var gameOverText;
+// when all fishes died
+function onAllFishesDied(){
   if(currentPlayer.role === "fish"){
-    gameOverText = "You lost!";
+    loadLostScreen();
   }else{
-    gameOverText = "You won!";
+    loadWonScreen();
   }
-  var gameOverTitle = game.add.text(game.world.centerX, game.world.centerY-30, gameOverText, { font: "64px Arial", fill: "#ffffff", align: "center" });
-  gameOverTitle.anchor.set(0.5, 0);
+}
 
-  cursors.left.enabled = false;
-  cursors.right.enabled = false;
-  cursors.up.enabled = false;
-  cursors.down.enabled = false;
+// load ending page
+function loadLostScreen(){
+  $.ajax({
+    url: 'template/lost.html'
+  }).done(function(response){
+    if($('#main').html() != response){
+      $('#main').empty();
+      $('#main').html(response);
+    }
+  }).fail(function() {
+    console.log("error");
+  }).always(function() {
+    console.log("complete");
+  });
+}
+
+function loadWonScreen(){
+  $.ajax({
+    url: 'template/won.html'
+  }).done(function(response){
+    if($('#main').html() != response){
+      $('#main').empty();
+      $('#main').html(response);
+    }
+  }).fail(function() {
+    console.log("error");
+  }).always(function() {
+    console.log("complete");
+  });
+}
+
+/* ************************************************
+** GAME HELPER FUNCTIONS
+************************************************ */
+
+function enabledKeyboardControl(enabled){
+  cursors.left.enabled = enabled;
+  cursors.right.enabled = enabled;
+  cursors.up.enabled = enabled;
+  cursors.down.enabled = enabled;
 }
 
 // Find player by ID

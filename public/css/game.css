@@ -68,8 +68,8 @@ h1{
   color: white;
   text-decoration: none;
   display: block;
-  margin-top: 50px;
-  font-size: 18px;
+  margin-top: 30px;
+  font-size: 20px;
 }
 .mask{
   position: absolute;
@@ -187,4 +187,13 @@ input#username:focus{
 /*role screen*/
 .role-img{
   margin-top: 50px;
+}
+
+/*won lost*/
+.play-again{
+  color: white;
+  text-decoration: none;
+  display: block;
+  margin-top: 1em;
+  font-size: 32px;
 }

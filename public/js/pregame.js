@@ -32,8 +32,6 @@ $(document).ready(function(){
       //player role is equal to fish
       player.role = 'fish';
 
-      // player.room_id = roomId;
-
       //send player object to server
       socket.emit('join game', player);
 
@@ -171,7 +169,7 @@ $(document).ready(function(){
   })
 
   socket.on('display count down', function(count){
-    if (count == 6 && $('#players-list').length){
+    if ($('#players-list').length){
       $('.countdown').show();
     }
     if($('#players-list').length == 0){
@@ -194,6 +192,7 @@ $(document).ready(function(){
 
     setTimeout(function(){
       // window.location.href = "game.html";
+      $('.countdown').hide();
       loadGame();
     },2000);
   })

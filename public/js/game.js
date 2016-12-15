@@ -79,8 +79,9 @@ var playState = {
       if (enemies[i].alive) {
         enemies[i].update();
         if(currentPlayer.role === "shark"){
-          game.physics.arcade.overlap(player, enemies[i].player, this.eatFish);
-
+          if((game.physics.arcade.distanceBetween(enemies[i].player, player)) <= 80){
+             game.physics.arcade.overlap(player, enemies[i].player, this.eatFish);
+         }
         }
       }
     }
@@ -93,7 +94,7 @@ var playState = {
     if(currentPlayer.role === "fish"){
       playerMove(200);
     }else{
-      playerMove(150);
+      playerMove(140);
     }
 
     socket.emit('move player', { x: player.x, y: player.y, angle: player.scale.x, room_id: roomId });
@@ -262,7 +263,7 @@ function onTimeUp(isFinalRound){
 
       if(count == 0){
         roundLabel.setText("Start");
-        socket.emit('display game timer', {timer: 20, room_id: roomId});
+        socket.emit('display game timer', {timer: 30, room_id: roomId});
       }else{
         roundLabel.setText(count);
       }

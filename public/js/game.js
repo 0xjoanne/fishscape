@@ -1,6 +1,8 @@
 /* global Phaser RemotePlayer io */
 
-// var socket;  // Socket connection
+/* ************************************************
+** GAME VARIABLES
+************************************************ */
 
 var player;
 var enemies;
@@ -8,15 +10,15 @@ var enemies;
 var cursors;
 var button;
 
-// var counter = 30;
 var timer;
 var alive = true;
 var round = 1;
 
 var game = new Phaser.Game(1024, 543, Phaser.AUTO, 'main');
 
-// var storedPlayers = JSON.parse(localStorage.getItem("players"));
-// var currentPlayer = JSON.parse(localStorage.getItem("currentPlayer"));
+/* ************************************************
+** GAME INITIALISATION
+************************************************ */
 
 var playState = {
   preload: function(){
@@ -80,7 +82,6 @@ var playState = {
           game.physics.arcade.overlap(player, enemies[i].player, this.eatFish);
 
         }
-        // game.physics.arcade.collide(player, enemies[i].player)
       }
     }
 
@@ -261,7 +262,7 @@ function onTimeUp(isFinalRound){
 
       if(count == 0){
         roundLabel.setText("Start");
-        socket.emit('display game timer', {timer: 15, room_id: roomId});
+        socket.emit('display game timer', {timer: 20, room_id: roomId});
       }else{
         roundLabel.setText(count);
       }
@@ -334,5 +335,6 @@ function playerById (id) {
 }
 
 
+// start play
 game.state.add('play', playState);
 game.state.start('play');

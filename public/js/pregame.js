@@ -1,8 +1,5 @@
 $(document).ready(function(){
 
-  // init socket
-  // var socket = io();
-
   // create a player object
   var player = {};
 
@@ -14,11 +11,11 @@ $(document).ready(function(){
     signup();
   });
 
-  // $('#username').keypress(function (e) {
-  //   if (e.which == 13) {
-  //     signup();
-  //   }
-  // });
+  $('#username').keypress(function (e) {
+    if (e.which == 13) {
+      signup();
+    }
+  });
 
   function signup(){
     if($('#username').val()){
@@ -105,10 +102,8 @@ $(document).ready(function(){
       if($('#main').html() != response){
         $('#content').fadeOut(200, function(){
           $('#main').html(response);
-          // localStorage.setItem('players', JSON.stringify(players));
           $.each(players, function(index, el) {
             if(el.id == socket.id){
-              // localStorage.setItem('currentPlayer',JSON.stringify(el));
               currentPlayer = el;
               if(el.role === "fish"){
                 $('.role-text').text("You are fish");

@@ -8,7 +8,7 @@
     "dev": "nodemon .",
     "lint": "standard --verbose | snazzy"
   },
-  "author": "Francisco Dias",
+  "author": "Qiongrong Jiang",
   "license": "MIT",
   "dependencies": {
     "ecstatic": "^1.0.1",

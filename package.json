@@ -1,7 +1,7 @@
 {
-  "name": "phaser-multiplayer-game",
+  "name": "fishscape",
   "version": "1.0.0",
-  "description": "Phaser example gone multiplayer!",
+  "description": "real-time multiplayer web action game",
   "main": "lib/server.js",
   "scripts": {
     "start": "node .",

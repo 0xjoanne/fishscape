@@ -2,13 +2,11 @@
 
 FISHSCAPE! is a real-time multiplayer web/mobile action game that offers two ways to enjoy! Each player will be entered into an ocean scenario where one randomly selected player will be created as the villainous shark whose main objective is to rid his kingdom of pesky annoying fish while at the same time feeding his hunger! The remaining players will be created as fish, in which their main objective is to escape the menacing teeth of the shark, while outlasting the time limit to be crowned the fittest, smartest, and last surviving fish of his school!
 
-[Live Demo](https://fishscape.herokuapp.com/)
+[Live Demo](https://fishscape.herokuapp.com/) - Design by [@ehzdesign](https://github.com/ehzdesign)
 
 ![Screenshot of fishscape](media/screenshot-pregame.png)
 
 ![Screenshot of fishscape](media/screenshot-game.png)
-
-Design by [@ehzdesign](https://github.com/ehzdesign)
 
 ## Install package
 

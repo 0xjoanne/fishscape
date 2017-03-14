@@ -2,7 +2,7 @@
   "name": "phaser-multiplayer-game",
   "version": "1.0.0",
   "description": "Phaser example gone multiplayer!",
-  "main": "lib/game.js",
+  "main": "lib/server.js",
   "scripts": {
     "start": "node .",
     "dev": "nodemon .",
